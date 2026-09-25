@@ -19,19 +19,19 @@ Use Bun from the repository root:
 
 ```sh
 bun install
-bun run db:up
 ```
 
-Set `DATABASE_URL` in `.env` to `postgres://lounge:lounge-local-only@localhost:5432/lounge`, then initialize the local database:
+Start your PostgreSQL sandbox container using its configured sandbox workflow. Set `DATABASE_URL` in `.env` to the connection string supplied for that container. The current local environment connects through `localhost:1717` to the `lounge` database; keep the sandbox username and password in `.env` and do not commit them.
+
+Apply the committed schema and seed the sample room:
 
 ```sh
-bun run db:generate
 bun run db:migrate
 bun run db:seed
 bun run dev
 ```
 
-For setup details and how to stop the local database while preserving its data, see [local development](docs/development.md). Use the root `bun.lock`; do not add another lockfile.
+For setup details, schema changes, and sandbox connectivity, see [local development](docs/development.md). Use the root `bun.lock`; do not add another lockfile.
 
 ## Useful commands
 
@@ -39,7 +39,9 @@ For setup details and how to stop the local database while preserving its data, 
 - `bun run type-check` checks all workspaces.
 - `bun run test` runs the server behavior tests.
 - `bun run lint` runs Biome lint checks.
-- `bun run db:stop` stops the local database and keeps its volume.
+- `bun run db:migrate` applies pending migrations to the configured database.
+- `bun run db:seed` inserts the repeatable sample room data.
+- `bun run db:generate` creates a migration after a schema change.
 
 ## Repository map
 

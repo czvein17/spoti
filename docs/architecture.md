@@ -2,7 +2,7 @@
 
 ## Current state
 
-The repository is a Bun workspace with a Vite/React client, a Hono server, a shared TypeScript package, and the `@untitle-project/db` PostgreSQL infrastructure package. The client uses TanStack Router and TanStack Query. `server/src/app.ts` composes the Hono middleware and routes, while `server/src/server.ts` starts Bun and serves the app; `server/src/index.ts` re-exports the app for package compatibility. `server/src/client.ts` exports the typed Hono RPC helper used by the room feature. `shared/src` exports the room contracts and reaction/spot identifiers.
+The repository is a Bun workspace with a Vite/React client, a Hono server, a shared TypeScript package, and the `@app/db` PostgreSQL infrastructure package. The client uses TanStack Router and TanStack Query. `server/src/app.ts` composes the Hono middleware and routes, while `server/src/server.ts` starts Bun and serves the app; `server/src/index.ts` re-exports the app for package compatibility. `server/src/client.ts` exports the typed Hono RPC helper used by the room feature. `shared/src` exports the room contracts and reaction/spot identifiers.
 
 The root lists `client`, `server`, `shared`, and `packages/db` as workspaces and uses the root `bun.lock`. The database package uses Drizzle ORM with PostgreSQL. The client includes React Three Fiber and Three.js for the room scene. The client and server have package-level type-check tasks; the server has a Bun test task. Spotify integration, Zustand, and account authentication remain unimplemented.
 

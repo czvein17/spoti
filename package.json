@@ -25,8 +25,6 @@
 		"type-check": "turbo type-check",
 		"test": "turbo test",
 		"postinstall": "turbo build --filter=shared --filter=@app/db --filter=server",
-		"db:up": "docker compose up -d postgres",
-		"db:stop": "docker compose stop postgres",
 		"db:generate": "bun run --cwd packages/db generate",
 		"db:migrate": "bun run --cwd packages/db migrate",
 		"db:seed": "bun run --cwd packages/db seed",

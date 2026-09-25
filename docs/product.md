@@ -46,7 +46,7 @@ Phase 1 does not include Spotify OAuth or playback, Apple Music, full authentica
 
 ## Acceptance criteria
 
-1. The application starts with Bun and a documented local PostgreSQL setup.
+1. The application starts with Bun and a documented PostgreSQL sandbox setup.
 2. Drizzle migrations apply, and an idempotent seed creates the room, DJ, three sample listeners, and mock track.
 3. The home page lists the available room and lets a guest enter a display name.
 4. A guest joins with a unique available listener spot; retries do not create duplicate memberships; full capacity is handled cleanly.
