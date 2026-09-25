@@ -74,15 +74,47 @@ When creating frontend code, first choose its owner: presentation (`components/`
 - Keep URL entry points in `client/src/routes/` and product UI in `client/src/features/<domain>/`. Put reusable shadcn/ui primitives in `client/src/components/ui/`; feature-specific UI stays with its feature.
 - Put reusable Three.js infrastructure in `client/src/three/` and feature-specific 3D code in `client/src/features/<domain>/three/` when those features exist.
 - Put feature-specific hooks, backend calls, query configuration, client services, and helpers in the matching feature subfolders described above. Keep top-level `client/src/hooks/`, `stores/`, and `lib/` for code genuinely shared across features.
-- Keep HTTP route registration in `server/src/routes/`, request handling in `handlers/`, business rules in `services/`, application queries in `repositories/`, and provider calls in `integrations/`. The intended flow is route → handler → service → repository → database; use only layers a concrete feature needs.
 - Keep cross-runtime contracts in `shared/src/`. Put shared schemas, types, and constants in their matching folders. Do not move server-only validation or provider code into `shared`.
 - Name handlers `<domain>-<action>.ts`, such as `room-create.ts`. Prefer specific names over catch-all `utils.ts` or `manager.ts` files.
 
+### Server request and error handling
+
+The request path is route → validation middleware → named handler → service capability → repository capability → database. Use only the layers a concrete feature needs.
+
+- Keep route modules declarative. Register `validateRequest(target, schema)` middleware followed by the named handler directly. Do not wrap a handler in a route callback just to pass values from `c.req.valid(...)`; the handler reads validated JSON, headers, or query values from the Hono context itself.
+- Keep handlers focused on HTTP work: read validated values and path parameters, call the appropriate service, and shape the successful response. Do not repeat `try/catch` or build error responses in each handler.
+- Keep Zod schemas in `server/src/schemas/` unless the client also needs the schema. Put public `apiErrorCode` and `apiErrorMessage` metadata on each request schema. `validateRequest` turns Zod issues into `ValidationError`; do not maintain a parallel route-level validation error map.
+- Throw `AppError` or a focused subclass from services for expected failures. Use `StatusCodes` from `http-status-codes` for status values. Let typed errors propagate to the one `globalErrorHandler` registered with `.onError(...)` on the root Hono app in `server/src/app.ts`.
+- The global handler owns the `{ error: { code, message, fields? } }` response shape. It handles `AppError` and `ValidationError`, maps known database SQLSTATEs through the database error mapper, converts Hono `HTTPException`s, and logs unknown errors before returning a generic 500. Keep database messages and query details server-side.
+- Catch locally only when the operation can recover, clean up, or translate an error specific to that operation.
+
+### Domain and capability modules
+
+Group server implementation by domain first, then split services and repositories by capability as real responsibilities diverge. Keep names aligned across layers and do not add folder-level barrel files without a real public interface. For example:
+
+```text
+server/src/services/room/
+  room-service.ts                 # listRooms, getRoom, joinRoom, leaveRoom
+  room-presence-service.ts        # heartbeat
+  room-reaction-service.ts        # toggleReaction
+  guest-lease.ts                  # shared room service rule
+
+server/src/repositories/room/
+  room-repository.ts              # listRooms, getRoom, joinGuest, leaveRoom
+  room-presence-repository.ts     # heartbeat
+  room-reaction-repository.ts     # toggleReaction
+```
+
+### Formatting
+
+- Use Biome as the formatter and linter for JavaScript, TypeScript, JSON, and CSS. Workspace format-on-save selects the Biome extension; `bun run format` formats the repository and `bun run lint` runs lint checks. Keep editor defaults aligned with `biome.json`.
+
 ## Checks and generated files
 
-- Colocate unit tests with their implementation (`room-create.test.ts`). Put future server integration tests in `server/tests/integration/` and end-to-end tests in `tests/e2e/`. Do not create mirrored global unit-test folders.
+- Keep a domain's service tests beside its core service when they exercise related services and repositories together (`room-service.test.ts`). Put cross-domain server integration tests in `server/tests/integration/` and end-to-end tests in `tests/e2e/`. Do not create mirrored global unit-test folders.
+- Exercise route validation and API error responses through the exported root app so tests include the registered global error boundary. Test pure mapping and formatting helpers directly when that gives a more focused assertion.
 - Use Bun and the root `bun.lock`. Do not add npm, pnpm, or Yarn lockfiles.
 - Do not edit `client/src/routeTree.gen.ts` or generated build output by hand.
-- Run checks relevant to a change and confirm they executed actual tasks. The root `type-check` and `test` scripts currently have no matching workspace scripts.
+- Run relevant checks and confirm they executed real tasks. Root `bun run type-check` and `bun run test` use Turbo; inspect output to confirm which workspace scripts ran.
 
 See [architecture](architecture.md) for boundaries, [file organization](file-organization.md) for locations, and [engineering standards](engineering-standards.md) for design principles.

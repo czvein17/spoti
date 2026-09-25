@@ -11,7 +11,11 @@ bun install
 bun run dev:client
 ```
 
-Run `bun run dev:server` in another terminal to use the starter page's API button. The client calls `VITE_SERVER_URL` when set and otherwise uses `http://localhost:3000`. Build this workspace with `bun run build:client`.
+Run `bun run dev:server` in another terminal to use the starter page's API button. The browser calls the current page origin; Vite proxies `/api` and `/hello` to the Hono server at `http://localhost:3000` during development. In production, configure the public ingress to route those paths to Hono on the same origin as the client. Build this workspace with `bun run build:client`.
+
+## Import aliases
+
+Client imports can use `@assets/`, `@components/`, `@features/`, `@hooks/`, `@lib/`, `@routes/`, `@stores/`, `@styles/`, `@three/`, and `@utils/` paths rooted at `src/`. The general `@/` alias remains available. Keep `vite.config.ts` and `tsconfig.app.json` alias mappings aligned.
 
 ## Source ownership
 

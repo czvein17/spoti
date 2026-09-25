@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Afterhours</title>
+  <rect width="64" height="64" rx="32" fill="#101216"/>
+  <circle cx="32" cy="32" r="23" fill="none" stroke="#c47d50" stroke-width="2"/>
+  <circle cx="32" cy="32" r="16" fill="none" stroke="#78988f" stroke-opacity=".62"/>
+  <circle cx="32" cy="32" r="5" fill="#e8e1d4"/>
+</svg>

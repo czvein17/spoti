@@ -1,0 +1,258 @@
+{
+	"id": "798da3cc-05ab-4a7f-b588-24507d8e48ad",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.room_members": {
+			"name": "room_members",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"room_id": {
+					"name": "room_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"guest_session_id": {
+					"name": "guest_session_id",
+					"type": "varchar(64)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"guest_name": {
+					"name": "guest_name",
+					"type": "varchar(24)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"role": {
+					"name": "role",
+					"type": "room_member_role",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"spot_id": {
+					"name": "spot_id",
+					"type": "varchar(40)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"joined_at": {
+					"name": "joined_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"last_seen_at": {
+					"name": "last_seen_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"room_members_room_spot_unique": {
+					"name": "room_members_room_spot_unique",
+					"columns": [
+						{
+							"expression": "room_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "spot_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"room_members_room_guest_session_unique": {
+					"name": "room_members_room_guest_session_unique",
+					"columns": [
+						{
+							"expression": "room_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "guest_session_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"room_members_room_id_rooms_id_fk": {
+					"name": "room_members_room_id_rooms_id_fk",
+					"tableFrom": "room_members",
+					"tableTo": "rooms",
+					"columnsFrom": ["room_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.room_reactions": {
+			"name": "room_reactions",
+			"schema": "",
+			"columns": {
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"emoji": {
+					"name": "emoji",
+					"type": "room_reaction_emoji",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"room_reactions_member_id_room_members_id_fk": {
+					"name": "room_reactions_member_id_room_members_id_fk",
+					"tableFrom": "room_reactions",
+					"tableTo": "room_members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"room_reactions_member_id_emoji_pk": {
+					"name": "room_reactions_member_id_emoji_pk",
+					"columns": ["member_id", "emoji"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.rooms": {
+			"name": "rooms",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "varchar(80)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"status": {
+					"name": "status",
+					"type": "room_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'open'"
+				},
+				"current_track_title": {
+					"name": "current_track_title",
+					"type": "varchar(160)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"current_track_artist": {
+					"name": "current_track_artist",
+					"type": "varchar(160)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {
+		"public.room_member_role": {
+			"name": "room_member_role",
+			"schema": "public",
+			"values": ["dj", "listener"]
+		},
+		"public.room_reaction_emoji": {
+			"name": "room_reaction_emoji",
+			"schema": "public",
+			"values": ["heart", "fire", "cry"]
+		},
+		"public.room_status": {
+			"name": "room_status",
+			"schema": "public",
+			"values": ["open", "closed"]
+		}
+	},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
+}

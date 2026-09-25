@@ -2,9 +2,9 @@
 
 ## Current state
 
-The repository is a BHVR Bun workspace with a Vite/React client, a Hono server, and a shared TypeScript package. TanStack Router and TanStack Query are already in the client. `server/src/index.ts` exposes the starter Hono routes. `server/src/client.ts` exports a typed Hono RPC helper that the client imports. `shared/src` exports the starter response type.
+The repository is a Bun workspace with a Vite/React client, a Hono server, a shared TypeScript package, and the `@untitle-project/db` PostgreSQL infrastructure package. The client uses TanStack Router and TanStack Query. `server/src/app.ts` composes the Hono middleware and routes, while `server/src/server.ts` starts Bun and serves the app; `server/src/index.ts` re-exports the app for package compatibility. `server/src/client.ts` exports the typed Hono RPC helper used by the room feature. `shared/src` exports the room contracts and reaction/spot identifiers.
 
-The root lists `client`, `server`, and `shared` as workspaces and uses the root `bun.lock`. The client is initialized with shadcn/ui's Radix-based preset and has a generic Button primitive. The root `type-check` and `test` commands have no matching package scripts today. Spotify integration is part of the product direction but is not implemented. PostgreSQL, Drizzle, Zustand, Three.js, and React Three Fiber are preparation-brief choices, not implemented capabilities.
+The root lists `client`, `server`, `shared`, and `packages/db` as workspaces and uses the root `bun.lock`. The database package uses Drizzle ORM with PostgreSQL. The client includes React Three Fiber and Three.js for the room scene. The client and server have package-level type-check tasks; the server has a Bun test task. Spotify integration, Zustand, and account authentication remain unimplemented.
 
 ## Ownership boundaries
 
@@ -12,37 +12,46 @@ The root lists `client`, `server`, and `shared` as workspaces and uses the root 
 client/src/routes                 URL entry points
 client/src/features               feature-specific React code
 client/src/components/ui          shared UI primitives
-client/src/three                  reusable 3D infrastructure
+client/src/three                  reusable 3D infrastructure, when needed
 server/src/routes                 HTTP route registration
-server/src/handlers               request and response handling
-server/src/services               business rules
-server/src/repositories           application database queries
+server/src/handlers/<domain>      request and response handling
+server/src/schemas                server-side request validation
+server/src/middleware             shared request and error handling
+server/src/errors                 typed application errors and database mapping
+server/src/services/<domain>      domain business rules, split by capability
+server/src/repositories/<domain>  domain database queries, split by capability
 server/src/integrations           external provider calls
 shared/src                        cross-runtime contracts
-packages/db                       future database infrastructure
+packages/db                       Drizzle schema, connection, migrations, and development seed
 packages/spotify                  future Spotify provider integration
 tests/e2e                         future end-to-end tests
 ```
 
-The server and shared packages keep their existing `src/` directories. Paths without code are ownership rules, not implemented layers; create them when needed. `packages/db` and `packages/spotify` are reserved directories, not Bun workspaces or working integrations yet.
+The server, shared, and database packages keep their `src/` directories. Paths without code are ownership rules, not implemented layers; create them when needed. `packages/spotify` remains a reserved directory and is not a workspace or integration.
+
+### Server request and error flow
+
+The room API is the current example of the backend boundary: route modules register Zod validation middleware and then a named handler; handlers read validated values from the Hono context and call the relevant service; services own domain rules; repositories own database queries. Keep service and repository modules grouped under the domain and split them by capability when the domain has distinct operations.
+
+The root Hono app in `server/src/app.ts` registers `globalErrorHandler` once with `.onError(...)`. Expected service errors use `AppError`; validation middleware converts Zod issues into `ValidationError`; a database mapper converts recognized SQLSTATEs; and the global handler returns the shared API error envelope. The package entry point in `server/src/index.ts` re-exports the app.
 
 ### Frontend responsibilities
 
 The frontend has two UI layers: generic shadcn/ui primitives in `client/src/components/ui/`, and product components inside their owning `client/src/features/<domain>/` feature. Product components compose foundation primitives; they do not belong in the shared primitive directory.
 
-Within a feature, use `components/` for presentation, `hooks/` for React coordination, `api/` for backend communication, `queries/` for TanStack Query configuration, `services/` for framework-independent client logic, `utils/` for small explicit helpers, and `three/` for React Three Fiber / Three.js internals. These are ownership rules, not a requirement to create every folder. The current feature directories are empty; add files and folders when real behavior needs them.
+Within a feature, use `components/` for presentation, `hooks/` for React coordination, `api/` for backend communication, `queries/` for TanStack Query configuration, `services/` for framework-independent client logic, `utils/` for small explicit helpers, and `three/` for React Three Fiber / Three.js internals. These are ownership rules, not a requirement to create every folder. The rooms feature uses only the subdirectories needed by its current behavior.
 
-The usual remote-data path is route/page → feature controller hook → query or mutation hook → query definition → API function → backend. Services support client-side calculations and transformations where needed; they are not a mandatory step in every request. Presentation composition runs route/page → product component → foundation UI. 3D implementation stays behind feature 3D components, which expose higher-level components to ordinary product UI.
+The room feature owns its presentation, API calls, query hooks, guest session service, and scene code in `client/src/features/rooms/`. Its 3D internals stay under `features/rooms/three/`, rather than in route pages. The usual remote-data path is route/page → feature controller hook → query or mutation hook → query definition → API function → backend. Services support client-side calculations and transformations where needed; they are not a mandatory step in every request. Presentation composition runs route/page → product component → foundation UI.
 
 Keep React presentation components focused on rendering and small UI state. Hooks coordinate React behavior without becoming catch-all logic modules. TanStack Query owns remote state; if Zustand is introduced, use it for genuine client-owned state rather than mirroring remote data. The backend remains authoritative for business and authorization rules even when the UI renders from server-provided permissions.
 
-The existing BHVR starter route demonstrates typed Hono RPC and TanStack Query in one small example. Preserve it as a demo; new feature code should put backend calls behind feature API functions and should not copy the demo's inline arrangement as a requirement.
+The BHVR starter route remains available at `/demo` as a typed Hono RPC example. New feature code should put backend calls behind feature API functions and should not copy the demo's inline arrangement as a requirement.
 
-The shadcn/ui foundation is configured in the client; only the generated Button primitive is present. Zustand, Three.js, React Three Fiber, and domain features remain unimplemented; keep current capabilities distinct from planned ones.
+The shadcn/ui foundation is configured in the client and remains the generic primitive layer. The room experience uses custom feature components. Zustand remains unimplemented; keep current capabilities distinct from later product plans.
 
 ## Dependency direction
 
-Client and server may use `shared`. Server repositories may use `packages/db`, and server integrations may use `packages/spotify`, once those packages are implemented. Reusable packages must not import client or server code. `shared` must not import application code or provider integrations.
+Client and server may use `shared`. Server repositories may use `packages/db`, and server integrations may use `packages/spotify` when that provider is approved. Reusable packages must not import client or server code. `shared` must not import application code or provider integrations.
 
 The current client imports a browser-safe runtime helper from `server/client` for Hono RPC. This starter boundary is preserved to keep the demo working. Revisit it only with a coordinated change to the client and server; do not silently replace Hono RPC with an unrelated API style.
 
@@ -51,7 +60,7 @@ The current client imports a browser-safe runtime helper from `server/client` fo
 | Choice | Benefit | Cost and control |
 | --- | --- | --- |
 | Bun monorepo | One lockfile and explicit workspace dependencies | Package configuration adds work; create only packages with an agreed owner. |
-| Layered server folders | Predictable route, handler, service, and repository placement | One feature can touch several folders; add domain subfolders only when a domain has code. |
+| Domain-first server folders | Keeps each domain's services and repositories grouped, with focused files for distinct capabilities | One feature can touch several layers; create domain folders when a domain has code and split by capability when responsibilities diverge. |
 | Shared contracts | One definition for data both runtimes use | `shared` can become a dumping ground; keep implementation and secrets out. |
 | Separate provider packages | Isolates external API and database details | Empty wrappers add maintenance; defer provider code until behavior is specified. |
 

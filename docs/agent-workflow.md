@@ -8,6 +8,7 @@
 2. Locate the smallest likely file set using a path-scoped search or file list. Read those files and their direct dependencies first; widen the search only when needed.
 3. Open only the documentation listed for that task in `AGENTS.md`. Read `product.md` when product behavior needs a decision, not for routine edits. Distinguish current code from planned paths.
 4. Before a substantial code change, identify the owner and acceptance criteria. For version-sensitive APIs, check the relevant package version and a focused official reference.
+5. For a new feature or phase, establish the behavior, API/data flow, code ownership, and acceptance boundaries before editing. Once the user approves a plan or directly requests implementation, carry it through without reopening settled choices. Ask only when an unresolved choice materially changes behavior or scope.
 
 For documentation or configuration changes, inspect the target files and directly related configuration only. Do not read application features, start a server, or run application checks unless the change depends on them.
 
@@ -17,6 +18,7 @@ For documentation or configuration changes, inspect the target files and directl
 2. Update a contract and its callers together. Update these docs when a boundary, command, or product decision changes.
 3. Run only relevant checks and read the result. A root Turbo command can exit successfully while executing zero package tasks; confirm actual tasks ran before calling the check passed.
 4. Report files changed, behavior changed, commands run with outcomes, and anything still unverified. Do not describe planned folders, packages, routes, or database behavior as implemented.
+5. Follow the user's settled constraints and the active project standards. If implementation work exposes a real conflict with them, explain the conflict and update the plan before changing the agreed behavior.
 
 ## Tool adapters
 

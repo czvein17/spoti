@@ -16,13 +16,16 @@ Use this guide to choose one owner for new code. Create a listed directory when 
 | Reusable 3D setup | `client/src/three/` | Feature-specific 3D code belongs in `features/<domain>/three/`. |
 | Global styles | `client/src/styles/` | Keep feature styles near the feature where practical. |
 | HTTP route registration | `server/src/routes/` | Map paths and middleware; do not hide business rules here. |
-| HTTP action | `server/src/handlers/<domain>/<domain>-<action>.ts` | Handle validation result, service call, and response. |
-| Business rule | `server/src/services/` | Keep it independent of HTTP transport. |
-| Application query | `server/src/repositories/` | Use database infrastructure from `packages/db` once present. |
+| HTTP action | `server/src/handlers/<domain>/<domain>-<action>.ts` | Read validated context input, call the service, and shape the success response. |
+| Business rule | `server/src/services/<domain>/` | Keep it independent of HTTP transport; split focused capability files when a domain has distinct responsibilities. |
+| Application query | `server/src/repositories/<domain>/` | Mirror service capabilities and use database infrastructure from `packages/db`. |
 | Server-only validation | `server/src/schemas/` | Put a contract in `shared/src/schemas/` only if the client also needs it. |
-| Middleware, configuration, or provider call | `server/src/middleware/`, `config/`, or `integrations/` | Keep secrets and provider SDKs on the server. |
+| Request or error middleware | `server/src/middleware/` | Share request validation and the root app's global error policy; do not duplicate error translation in routes. |
+| Application errors | `server/src/errors/` | Define typed API errors and focused mappers for known external or database errors. |
+| Configuration or provider call | `server/src/config/` or `server/src/integrations/` | Keep secrets and provider SDKs on the server. |
 | Cross-runtime type or constant | `shared/src/types/` or `shared/src/constants/` | Do not put application implementation in `shared`. |
 | Database schema or migration | `packages/db/` | Do not put application repositories here. |
 | Spotify provider code | `packages/spotify/` | Keep provider concepts separate from the product domain. |
+| Formatting configuration | `biome.json`, `.vscode/settings.json`, `package.json` | Biome owns formatting; `bun run format` applies it across the repository. |
 
 Keep `client/src/routeTree.gen.ts` generated. Add an index file for a real public package interface, not for every folder. Avoid broad wildcard exports, speculative feature domains, and placeholder files added only to preserve empty directories.

@@ -1,45 +1,56 @@
-# Untitled Project
+# Afterhours
 
-This is a planned third-party Spotify app for socializing around music. Users will be able to browse what other people are currently listening to, jam together, or join a room. A character that each user can customize is planned for later. The project does not have a name yet, and the first MVP journey and detailed behavior still need to be selected.
+Afterhours is a small social listening lounge. A guest can enter with a display name, join a seeded room, see the DJ and other listeners in a fixed 3D scene, and react to the room. Phase 1 uses mock track metadata and does not stream audio.
 
-## Where the project stands
+## Phase 1 status
 
 | Area | Current state |
 | --- | --- |
-| Application | The BHVR starter page and a `GET /hello` demo API are working examples. |
-| Client | Vite, React, TypeScript, TanStack Router, TanStack Query, and Tailwind CSS are configured. |
-| Server | Hono runs with Bun and shares a typed RPC helper with the client. |
-| Data and providers | PostgreSQL, Drizzle, Spotify integration, and 3D scenes are not implemented. |
-| Product scope | The social music direction is set; the first MVP journey and acceptance criteria are still open. |
+| Client | Vite, React 19, TanStack Router, TanStack Query, and a custom dark lounge interface. |
+| Room scene | React Three Fiber with procedural placeholder avatars and predetermined spots. |
+| Server | Bun and Hono typed RPC routes, split into handlers, service rules, and repositories. |
+| Database | PostgreSQL and Drizzle under `packages/db`, with migrations and a repeatable development seed. |
+| Guest identity | Tab-scoped display name and anonymous session ID; memberships expire after 60 seconds without a heartbeat. |
+| Spotify | Reserved for a later phase; no OAuth or playback integration. |
 
-The repository documents where client features, server behavior, and shared contracts will live. Create each empty directory when it first has code. `packages/db` and `packages/spotify` are reserved by their READMEs; neither contains an integration. The current demo remains in place; see the [roadmap](docs/roadmap.md) for the order of work.
-
-## Run the current demo
+## Run locally
 
 Use Bun from the repository root:
 
 ```sh
 bun install
+bun run db:up
+```
+
+Set `DATABASE_URL` in `.env` to `postgres://lounge:lounge-local-only@localhost:5432/lounge`, then initialize the local database:
+
+```sh
+bun run db:generate
+bun run db:migrate
+bun run db:seed
 bun run dev
 ```
 
-Run the apps separately with `bun run dev:client` and `bun run dev:server`. Build with `bun run build` and lint with `bun run lint`.
+For setup details and how to stop the local database while preserving its data, see [local development](docs/development.md). Use the root `bun.lock`; do not add another lockfile.
 
-The root `type-check` and `test` scripts currently have no matching workspace package scripts, so they do not yet provide meaningful verification. Use the root `bun.lock` for installs.
+## Useful commands
+
+- `bun run build` builds all workspaces.
+- `bun run type-check` checks all workspaces.
+- `bun run test` runs the server behavior tests.
+- `bun run lint` runs Biome lint checks.
+- `bun run db:stop` stops the local database and keeps its volume.
 
 ## Repository map
 
 | Path | Owner |
 | --- | --- |
-| [`client/`](client/README.md) | Browser application and UI. |
-| [`server/`](server/README.md) | HTTP API and server behavior. |
-| `shared/src/` | Shared contracts; schemas and constants get folders when needed. |
-| `packages/db/`, `packages/spotify/` | Reserved integration boundaries; not workspace packages yet. |
-| `tests/e2e/` | Reserved location for end-to-end tests. |
-| [`docs/`](docs/architecture.md) | Architecture, engineering rules, product decisions, and roadmap. |
+| `client/src/routes/` | URL entry points. |
+| `client/src/features/rooms/` | Discovery, guest coordination, room presentation, and 3D scene. |
+| `server/src/` | HTTP routes, handlers, room rules, and application repositories. |
+| `shared/src/` | Cross-runtime room contracts and constants. |
+| `packages/db/` | Drizzle schema, database client, migrations, and seed data. |
+| `packages/spotify/` | Reserved provider boundary for a later phase. |
+| `docs/` | Product decisions, architecture, development setup, and engineering rules. |
 
-The server and shared code remain under their existing `src/` directories. See [file organization](docs/file-organization.md) for ownership rules; a documented path does not imply an implemented feature.
-
-## Working agreements
-
-Start with [AGENTS.md](AGENTS.md). The [engineering standards](docs/engineering-standards.md) describe DRY, KISS, YAGNI, interfaces, and verification; [conventions](docs/conventions.md) cover placement, names, and tests. The [architecture guide](docs/architecture.md) records dependency boundaries and tradeoffs. The [documentation references](docs/references.md) link to focused library pages. The [product brief](docs/product.md) records decisions as they are made, and the [agent workflow](docs/agent-workflow.md) keeps Codex, Claude Code, and OpenCode aligned on the same project rules.
+Start with [AGENTS.md](AGENTS.md). The [product brief](docs/product.md) records the Phase 1 audience, selected behavior, data ownership, failure cases, and acceptance criteria. See [architecture](docs/architecture.md), [conventions](docs/conventions.md), [engineering standards](docs/engineering-standards.md), and [development setup](docs/development.md) for implementation details.
