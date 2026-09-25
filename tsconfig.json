@@ -30,6 +30,7 @@
 		"experimentalDecorators": true,
 
 		// Output control
+		"noEmit": true,
 		"skipLibCheck": true,
 
 		// Optional strict flags (disabled by default)
