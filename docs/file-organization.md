@@ -7,7 +7,12 @@ Use this guide to choose one owner for new code. Create a listed directory when 
 | URL page | `client/src/routes/` | Keep route files focused on routing and composition. |
 | React feature | `client/src/features/<domain>/` | Add a domain folder when the feature has code. |
 | Shared UI primitive | `client/src/components/ui/` | Use shadcn/ui for primitives only. Product-specific UI stays in its feature. |
-| Shared client hook, store, or helper | `client/src/hooks/`, `stores/`, or `lib/` | Feature-specific code stays with its feature. |
+| Feature presentation | `client/src/features/<domain>/components/` | Compose product UI from foundation primitives; see `docs/conventions.md`. |
+| Feature React coordination | `client/src/features/<domain>/hooks/` | Keep hooks focused on React behavior and feature coordination. |
+| Feature backend calls | `client/src/features/<domain>/api/` | Isolate typed RPC or HTTP calls from UI and query lifecycle. |
+| Feature query configuration | `client/src/features/<domain>/queries/` | Keep TanStack Query keys and options reusable. |
+| Feature client logic and helpers | `client/src/features/<domain>/services/` or `utils/` | Use services for framework-independent logic and utils for small explicit helpers. |
+| Shared client hook, store, or helper | `client/src/hooks/`, `stores/`, or `lib/` | Use only for code genuinely shared across features. |
 | Reusable 3D setup | `client/src/three/` | Feature-specific 3D code belongs in `features/<domain>/three/`. |
 | Global styles | `client/src/styles/` | Keep feature styles near the feature where practical. |
 | HTTP route registration | `server/src/routes/` | Map paths and middleware; do not hide business rules here. |

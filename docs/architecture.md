@@ -4,7 +4,7 @@
 
 The repository is a BHVR Bun workspace with a Vite/React client, a Hono server, and a shared TypeScript package. TanStack Router and TanStack Query are already in the client. `server/src/index.ts` exposes the starter Hono routes. `server/src/client.ts` exports a typed Hono RPC helper that the client imports. `shared/src` exports the starter response type.
 
-The root lists `client`, `server`, and `shared` as workspaces and uses the root `bun.lock`. The root `type-check` and `test` commands have no matching package scripts today. Spotify integration is part of the product direction but is not implemented. PostgreSQL, Drizzle, Three.js, and React Three Fiber are preparation-brief choices, not implemented capabilities.
+The root lists `client`, `server`, and `shared` as workspaces and uses the root `bun.lock`. The client is initialized with shadcn/ui's Radix-based preset and has a generic Button primitive. The root `type-check` and `test` commands have no matching package scripts today. Spotify integration is part of the product direction but is not implemented. PostgreSQL, Drizzle, Zustand, Three.js, and React Three Fiber are preparation-brief choices, not implemented capabilities.
 
 ## Ownership boundaries
 
@@ -25,6 +25,20 @@ tests/e2e                         future end-to-end tests
 ```
 
 The server and shared packages keep their existing `src/` directories. Paths without code are ownership rules, not implemented layers; create them when needed. `packages/db` and `packages/spotify` are reserved directories, not Bun workspaces or working integrations yet.
+
+### Frontend responsibilities
+
+The frontend has two UI layers: generic shadcn/ui primitives in `client/src/components/ui/`, and product components inside their owning `client/src/features/<domain>/` feature. Product components compose foundation primitives; they do not belong in the shared primitive directory.
+
+Within a feature, use `components/` for presentation, `hooks/` for React coordination, `api/` for backend communication, `queries/` for TanStack Query configuration, `services/` for framework-independent client logic, `utils/` for small explicit helpers, and `three/` for React Three Fiber / Three.js internals. These are ownership rules, not a requirement to create every folder. The current feature directories are empty; add files and folders when real behavior needs them.
+
+The usual remote-data path is route/page → feature controller hook → query or mutation hook → query definition → API function → backend. Services support client-side calculations and transformations where needed; they are not a mandatory step in every request. Presentation composition runs route/page → product component → foundation UI. 3D implementation stays behind feature 3D components, which expose higher-level components to ordinary product UI.
+
+Keep React presentation components focused on rendering and small UI state. Hooks coordinate React behavior without becoming catch-all logic modules. TanStack Query owns remote state; if Zustand is introduced, use it for genuine client-owned state rather than mirroring remote data. The backend remains authoritative for business and authorization rules even when the UI renders from server-provided permissions.
+
+The existing BHVR starter route demonstrates typed Hono RPC and TanStack Query in one small example. Preserve it as a demo; new feature code should put backend calls behind feature API functions and should not copy the demo's inline arrangement as a requirement.
+
+The shadcn/ui foundation is configured in the client; only the generated Button primitive is present. Zustand, Three.js, React Three Fiber, and domain features remain unimplemented; keep current capabilities distinct from planned ones.
 
 ## Dependency direction
 

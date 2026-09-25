@@ -13,6 +13,7 @@ Bun workspace: Vite/React client, Hono server, and shared TypeScript contracts. 
 ## Structure and rules
 
 - `client/src` owns client behavior, `server/src` owns server behavior, and `shared/src` owns cross-runtime contracts. Use the root `bun.lock`; do not add another lockfile.
+- Keep frontend product components focused on presentation. Place React coordination, backend communication, TanStack Query configuration, framework-independent client logic, and 3D internals in their feature-owned layers; keep `components/ui` generic. Follow [frontend conventions](docs/conventions.md) and [architecture boundaries](docs/architecture.md), and create feature directories only when real code needs them.
 - Client and server may depend on `shared`; `shared` must not depend on application code. Keep provider secrets and server-only code out of the client.
 - `client/src/routeTree.gen.ts` is generated. Do not edit it by hand.
 - PostgreSQL, Drizzle, Spotify integration, and 3D character code are plans, not implemented capabilities.
