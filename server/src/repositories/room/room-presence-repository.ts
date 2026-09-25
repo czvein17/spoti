@@ -1,5 +1,5 @@
-import { db } from "@untitle-project/db/client";
-import { roomMembers } from "@untitle-project/db/schema";
+import { db } from "@app/db/client";
+import { roomMembers } from "@app/db/schema";
 import { and, eq, gt } from "drizzle-orm";
 
 export async function heartbeat(

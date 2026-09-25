@@ -7,8 +7,8 @@ import {
 	it,
 } from "bun:test";
 import { randomUUID } from "node:crypto";
-import { db, postgresClient } from "@untitle-project/db/client";
-import { roomMembers, rooms } from "@untitle-project/db/schema";
+import { db, postgresClient } from "@app/db/client";
+import { roomMembers, rooms } from "@app/db/schema";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
 import { ROOM_SPOT_IDS } from "shared";

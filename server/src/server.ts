@@ -1,7 +1,4 @@
-import {
-	checkDatabaseConnection,
-	postgresClient,
-} from "@untitle-project/db/client";
+import { checkDatabaseConnection, postgresClient } from "@app/db/client";
 import { app } from "./app";
 import { startServer } from "./server-startup";
 

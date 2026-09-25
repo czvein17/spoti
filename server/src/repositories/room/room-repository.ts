@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { db } from "@untitle-project/db/client";
-import { roomMembers, roomReactions, rooms } from "@untitle-project/db/schema";
+import { db } from "@app/db/client";
+import { roomMembers, roomReactions, rooms } from "@app/db/schema";
 import {
 	and,
 	asc,

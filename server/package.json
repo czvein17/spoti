@@ -21,7 +21,7 @@
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.9.1",
-		"@untitle-project/db": "workspace:*",
+		"@app/db": "workspace:*",
 		"concurrently": "^10.0.5",
 		"hono": "^4.10.8",
 		"http-status-codes": "^2.3.0",

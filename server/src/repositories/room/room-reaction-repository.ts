@@ -1,5 +1,5 @@
-import { db } from "@untitle-project/db/client";
-import { roomMembers, roomReactions } from "@untitle-project/db/schema";
+import { db } from "@app/db/client";
+import { roomMembers, roomReactions } from "@app/db/schema";
 import { and, eq } from "drizzle-orm";
 import type { RoomReaction } from "shared";
 
