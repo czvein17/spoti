@@ -34,6 +34,6 @@ These files align project instructions. Model behavior and available tools can s
 
 Context7 is configured for Codex in `.codex/config.toml` using `CONTEXT7_API_KEY`. Claude Code and OpenCode have user-level connections on the current machine; other machines need their own connection and environment variable. Keep tokens out of Git. Check available connections with `codex mcp list`, `claude mcp list`, or `opencode mcp list` when diagnosing a connection.
 
-The [Hono documentation index](https://hono.dev/llms.txt) is a reference, not an MCP endpoint. Use the task-specific pages in `docs/references.md` and query Context7 one concept at a time. Playwright remains available for explicit browser requests or browser/UI debugging; availability alone does not call for its use.
+The [Hono documentation index](https://hono.dev/llms.txt) is a reference, not an MCP endpoint. Use the task-specific pages in `docs/references.md` and query Context7 one concept at a time. For visible UI changes, use Playwright for one bounded desktop and mobile verification pass when the app can run. For other work, use it only for explicit browser requests or browser/UI debugging.
 
 The adapter behavior above follows the current [Codex AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md), [Claude Code memory guide](https://code.claude.com/docs/en/memory), and [OpenCode V2 instructions guide](https://opencode.ai/v2/docs/instructions). Recheck those guides before changing tool configuration.

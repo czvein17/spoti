@@ -51,6 +51,12 @@ The BHVR starter route remains available at `/demo` as a typed Hono RPC example.
 
 The shadcn/ui foundation is configured in the client and remains the generic primitive layer. The room experience uses custom feature components. Zustand remains unimplemented; keep current capabilities distinct from later product plans.
 
+### Route generation and code splitting
+
+Vite loads the TanStack Router plugin before the React plugin and enables `autoCodeSplitting`. Keep that shared configuration in `client/vite.config.ts`. TanStack Router generates `client/src/routeTree.gen.ts` from each product's route files, so the generated route list changes with the product while the generation pipeline stays the same.
+
+Keep route component functions local to their route files so the plugin can split them. Do not export those component functions or hand-edit the generated route tree. The root route remains in the main bundle.
+
 ## Dependency direction
 
 Client and server may use `shared`. Server repositories may use `packages/db`, and server integrations may use `packages/spotify` when that provider is approved. Reusable packages must not import client or server code. `shared` must not import application code or provider integrations.

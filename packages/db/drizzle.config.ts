@@ -4,7 +4,7 @@ const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
 	throw new Error(
-		"DATABASE_URL must be set to connect Drizzle Kit to the PostgreSQL sandbox.",
+		"DATABASE_URL must be set to connect Drizzle Kit to PostgreSQL.",
 	);
 }
 
