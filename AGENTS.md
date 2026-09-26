@@ -29,6 +29,7 @@ Bun workspace: Vite/React client, Hono server, and shared TypeScript contracts. 
 | Task | Read when needed |
 | --- | --- |
 | Product scope or sequencing | `docs/product.md`, `docs/roadmap.md` |
+| UI flows or backend behavior derived from screens | `docs/design-flow.md` |
 | Architecture or dependency boundaries | `docs/architecture.md` |
 | Adding or moving code | `docs/file-organization.md` |
 | Implementing or reviewing code | `docs/engineering-standards.md` |

@@ -1,6 +1,12 @@
 # Product brief
 
-This is a web-first social music experience. People enter as lightweight guest identities and spend time together in small, hosted listening rooms represented by customizable music personas in later phases. The project name is undecided.
+This is a web-first social music experience. People enter as lightweight guest identities and spend time together in small, hosted listening rooms represented by customizable music personas in later phases. Afterhours is the working name; the final project name is undecided.
+
+## Approved design direction
+
+Use a cozy pastel lounge with cream, mint, peach, and lilac, rounded controls, and characters as the main visual focus. Spotify is the intended music provider; the application owns social rooms and future character styling. Spotify playback, synchronized listening, and game mechanics are not approved implementation assumptions.
+
+The [design flow](design-flow.md) records the approved concept, screen journeys, recovery states, current API mapping, and unresolved provider decisions. Review the relevant flow before adding backend capabilities. The visual redesign retains the Phase 1 behavior below.
 
 ## Phase 1 audience and goal
 

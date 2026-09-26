@@ -8,7 +8,7 @@
 2. Locate the smallest likely file set using a path-scoped search or file list. Read those files and their direct dependencies first; widen the search only when needed.
 3. Open only the documentation listed for that task in `AGENTS.md`. Read `product.md` when product behavior needs a decision, not for routine edits. Distinguish current code from planned paths.
 4. Before a substantial code change, identify the owner and acceptance criteria. For version-sensitive APIs, check the relevant package version and a focused official reference.
-5. For a new feature or phase, establish the behavior, API/data flow, code ownership, and acceptance boundaries before editing. Once the user approves a plan or directly requests implementation, carry it through without reopening settled choices. Ask only when an unresolved choice materially changes behavior or scope.
+5. For a new feature or phase, establish the behavior, API/data flow, code ownership, and acceptance boundaries before editing. Use [design-flow.md](design-flow.md) for screen-driven work: map each action and recovery state to its contract and backend authority before adding services or tables. Distinguish approved visual choices from proposed features and unresolved provider behavior. Once the user approves a plan or directly requests implementation, carry it through without reopening settled choices. Ask only when an unresolved choice materially changes behavior or scope.
 
 For documentation or configuration changes, inspect the target files and directly related configuration only. Do not read application features, start a server, or run application checks unless the change depends on them.
 
