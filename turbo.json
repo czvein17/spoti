@@ -34,7 +34,14 @@
 				"vite.config.ts",
 				"package.json"
 			],
-			"env": ["NODE_ENV", "PORT", "VITE_*", "DATABASE_URL"]
+			"env": [
+				"NODE_ENV",
+				"PORT",
+				"VITE_*",
+				"DATABASE_URL",
+				"API_PROXY_TARGET",
+				"CORS_ORIGINS"
+			]
 		},
 		"lint": {
 			"dependsOn": ["^build"],

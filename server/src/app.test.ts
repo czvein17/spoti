@@ -3,14 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { app } from "./app";
 
 describe("Hono app composition", () => {
-	it("serves the root greeting", async () => {
-		const response = await app.request("/");
-
-		expect(response.status).toBe(StatusCodes.OK);
-		expect(await response.text()).toBe("Hello Hono!");
-	});
-
-	it("serves the typed hello response", async () => {
+	it("serves the typed hello response with secure headers", async () => {
 		const response = await app.request("/hello");
 
 		expect(response.status).toBe(StatusCodes.OK);
@@ -18,6 +11,8 @@ describe("Hono app composition", () => {
 			message: "Hello BHVR!",
 			success: true,
 		});
+		expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+		expect(response.headers.get("x-frame-options")).toBeTruthy();
 	});
 
 	it("mounts room routes and applies the app error handler", async () => {

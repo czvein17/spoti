@@ -11,7 +11,9 @@ bun install
 bun run dev:client
 ```
 
-Run `bun run dev:server` in another terminal to use the starter page's API button. The browser calls the current page origin; Vite proxies `/api` and `/hello` to the Hono server at `http://localhost:3000` during development. In production, configure the public ingress to route those paths to Hono on the same origin as the client. Build this workspace with `bun run build:client`.
+Run `bun run dev:server` in another terminal to use the starter page's API button. The browser calls the current page origin. Vite proxies `/api` and `/hello` to Hono at `http://localhost:3000` by default. Set `API_PROXY_TARGET` in the root `.env` only when Hono uses another address.
+
+For production, `bun run build` writes the client to `client/dist`, and `bun run start` has Hono return that build together with the API. The client uses the same `window.location.origin` configuration in both modes.
 
 ## Import aliases
 

@@ -10,10 +10,15 @@ function getStartupErrorCode(error: unknown): string | undefined {
 }
 
 try {
+	const port = Number(process.env.PORT ?? "3000");
+	if (!Number.isInteger(port) || port < 1 || port > 65535) {
+		throw new Error("PORT must be an integer between 1 and 65535.");
+	}
+
 	await checkDatabaseConnection();
 
 	const server = Bun.serve({
-		port: 3000,
+		port,
 		fetch: app.fetch,
 	});
 
@@ -24,7 +29,7 @@ try {
 	const errorCode = getStartupErrorCode(error);
 	const errorDetail = errorCode ? ` (error code: ${errorCode})` : "";
 	console.error(
-		`Server startup failed${errorDetail}. Check DATABASE_URL, PostgreSQL availability, and whether port 3000 is free.`,
+		`Server startup failed${errorDetail}. Check PORT, DATABASE_URL, and PostgreSQL availability.`,
 	);
 	process.exitCode = 1;
 }

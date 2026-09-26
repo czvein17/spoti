@@ -23,6 +23,8 @@ bun install
 
 Start your PostgreSQL sandbox container using its configured sandbox workflow. Set `DATABASE_URL` in `.env` to the connection string supplied for that container. The current local environment connects through `localhost:1717` to the `lounge` database; keep the sandbox username and password in `.env` and do not commit them.
 
+The default setup does not require `API_PROXY_TARGET` or `CORS_ORIGINS`. Vite forwards browser requests to Hono at `http://localhost:3000`, and the browser uses its current origin. Uncomment `API_PROXY_TARGET` in `.env` only when the development API uses another address. Uncomment `CORS_ORIGINS` only when a browser calls Hono directly from another origin.
+
 Apply the committed schema and seed the sample room:
 
 ```sh
@@ -31,11 +33,21 @@ bun run db:seed
 bun run dev
 ```
 
+For a production-style run, build the workspace and start Hono:
+
+```sh
+bun run build
+bun run start
+```
+
+Open `http://localhost:3000`. Hono returns the built client and the API from the same origin.
+
 For setup details, schema changes, and sandbox connectivity, see [local development](docs/development.md). Use the root `bun.lock`; do not add another lockfile.
 
 ## Useful commands
 
 - `bun run build` builds all workspaces.
+- `bun run start` starts Hono with the built client and API on one origin.
 - `bun run type-check` checks all workspaces.
 - `bun run test` runs the server behavior tests.
 - `bun run lint` runs Biome lint checks.

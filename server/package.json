@@ -16,7 +16,7 @@
 	"scripts": {
 		"build": "tsc",
 		"type-check": "tsc --noEmit",
-		"test": "bun test src",
+		"test": "bun --env-file=../.env test src",
 		"dev": "concurrently --kill-others \"bun --watch run src/server.ts\" \"tsc --watch\""
 	},
 	"dependencies": {

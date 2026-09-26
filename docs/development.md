@@ -24,6 +24,11 @@ bun run db:generate
 bun run db:migrate
 ```
 
+The two network variables in `.env.example` are optional:
+
+- `API_PROXY_TARGET` overrides the Vite proxy target. Leave it unset when Hono runs at `http://localhost:3000`.
+- `CORS_ORIGINS` allows browsers on other origins to call Hono directly. Leave it unset when the browser uses the Vite proxy or Hono returns the production client.
+
 ## Start the application
 
 Run the workspace from the repository root:
@@ -33,6 +38,19 @@ bun install
 bun run dev
 ```
 
-The browser API client uses the current page origin. During development, Vite proxies `/api` and `/hello` to the Hono server at `http://localhost:3000`, so browser requests stay same-origin. The server requires `DATABASE_URL` and checks that PostgreSQL is reachable before it starts listening. If the connection check fails, startup exits with an error. This check does not apply migrations; run `bun run db:migrate` after generating a schema migration.
+The browser API client uses the current page origin. During development, Vite proxies `/api` and `/hello` to the Hono server at `http://localhost:3000` by default, so browser requests stay same-origin. The server requires `DATABASE_URL` and checks that PostgreSQL is reachable before it starts listening. If the connection check fails, startup exits with an error. This check does not apply migrations; run `bun run db:migrate` after generating a schema migration.
 
-In production, configure the hosting ingress to forward `/api/*` and `/hello` to Hono on the same public origin as the client. This repository has no production ingress configuration; a separate API origin would require cross-origin requests and CORS configuration.
+## Production-style run
+
+Build every workspace, then start Hono from the repository root:
+
+```sh
+bun run build
+bun run start
+```
+
+Open `http://localhost:3000`. Hono returns files from `client/dist`, supports the client-side route fallback, and handles `/api/*` and `/hello` on the same origin. Run the build again after changing client code.
+
+An unset `CORS_ORIGINS` value permits no cross-origin browser origin. This is the default because both development and production use same-origin browser requests. If a deployment separates the frontend and API, set `CORS_ORIGINS` to a comma-separated list of exact frontend origins. Credentialed CORS remains disabled.
+
+Run `bun run test` from the repository root. The server test task loads the root `.env` when it exists. In continuous integration, provide `DATABASE_URL` through the job environment.

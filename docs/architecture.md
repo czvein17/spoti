@@ -6,6 +6,8 @@ The repository is a Bun workspace with a Vite/React client, a Hono server, a sha
 
 The root lists `client`, `server`, `shared`, and `packages/db` as workspaces and uses the root `bun.lock`. The database package uses Drizzle ORM with PostgreSQL. The client includes React Three Fiber and Three.js for the room scene. The client and server have package-level type-check tasks; the server has a Bun test task. Spotify integration, Zustand, and account authentication remain unimplemented.
 
+The client sends API requests to `window.location.origin`. During development, Vite forwards `/api` and `/hello` to Hono at `http://localhost:3000` by default. `API_PROXY_TARGET` can override that address. After `bun run build`, Hono returns the files in `client/dist` alongside its API routes. Both modes keep browser traffic on one origin.
+
 ## Ownership boundaries
 
 ```text

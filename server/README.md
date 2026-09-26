@@ -4,7 +4,7 @@ The server separates Hono app composition from Bun startup. `src/app.ts` configu
 
 | Route | Current response |
 | --- | --- |
-| `GET /` | Plain-text greeting. |
+| `GET /` | Built client application after `bun run build`. |
 | `GET /hello` | JSON response using the type exported by `shared`. |
 | `GET /api/v1/rooms` | JSON list of available rooms. |
 
@@ -19,7 +19,9 @@ bun install
 bun run dev:server
 ```
 
-Build this workspace with `bun run build:server`. The current demo server is available at `http://localhost:3000` using the starter configuration.
+Build this workspace with `bun run build:server`. The development server is available at `http://localhost:3000`.
+
+For a production-style run, use `bun run build` followed by `bun run start` from the repository root. Hono returns the generated `client/dist` files, the client-side route fallback, and API routes from one origin. Leave `CORS_ORIGINS` unset for this setup. Define exact origins only when browsers call Hono directly from another origin.
 
 ## Source ownership
 
